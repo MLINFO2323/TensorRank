@@ -14,76 +14,77 @@
 </head>
 
 <body>
-  <main>
-    <script>
-      // login script 
-      window.addEventListener("DOMContentLoaded", () => {
-        // if already logged in 
-        let userEmail = '<%= userEmail %>'
-        let userPicture = '<%= userPicture %>'
+  <script>
+    // login script 
+    window.addEventListener("DOMContentLoaded", () => {
+      // if already logged in 
+      let userEmail = '<%= userEmail %>'
+      let userPicture = '<%= userPicture %>'
 
-        if (userEmail) {
-          let loginBtn = document.getElementById("login_btn");
-          let parent = loginBtn.parentElement;
-          loginBtn.remove();
-          let profilePic = document.createElement("img");
-          profilePic.style.borderRadius = "50%";
-          profilePic.src = userPicture;
-          profilePic.style.paddingTop = "10px";
-          profilePic.style.paddingRight = "20px";
-          profilePic.width = 70;
-          parent.appendChild(profilePic);
-          document.getElementById("logged_as").innerHTML = "Logged in as: " + userEmail;
-          return;
-        }
+      if (userEmail) {
+        let loginBtn = document.getElementById("login_btn");
+        let parent = loginBtn.parentElement;
+        loginBtn.remove();
+        console.log(parent)
+        let profilePic = document.createElement("img");
+        profilePic.style.borderRadius = "50%";
+        profilePic.src = userPicture;
+        profilePic.width = 70;
+        parent.appendChild(profilePic);
+        document.getElementById("logged_as").innerHTML = userEmail;
+        return;
+      }
 
-        const firebaseConfig = {
-          apiKey: "AIzaSyCuWE_YXpBXkqqrtasMJbcgIDTmHikTIQ4",
-          authDomain: "tensorlearn-d7230.firebaseapp.com",
-          projectId: "tensorlearn-d7230",
-          storageBucket: "tensorlearn-d7230.appspot.com",
-          messagingSenderId: "466709369732",
-          appId: "1:466709369732:web:3f039fe83d43ddac4dc3d1",
-          measurementId: "G-BF5ZP6XCTE"
-        };
+      const firebaseConfig = {
+        apiKey: "AIzaSyCuWE_YXpBXkqqrtasMJbcgIDTmHikTIQ4",
+        authDomain: "tensorlearn-d7230.firebaseapp.com",
+        projectId: "tensorlearn-d7230",
+        storageBucket: "tensorlearn-d7230.appspot.com",
+        messagingSenderId: "466709369732",
+        appId: "1:466709369732:web:3f039fe83d43ddac4dc3d1",
+        measurementId: "G-BF5ZP6XCTE"
+      };
 
-        firebase.initializeApp(firebaseConfig);
+      firebase.initializeApp(firebaseConfig);
 
-        firebase.auth().setPersistence(firebase.auth.Auth.Persistence.NONE);
+      firebase.auth().setPersistence(firebase.auth.Auth.Persistence.NONE);
 
-        document.getElementById("login_btn").addEventListener("click", () => {
-          let provider = new firebase.auth.GoogleAuthProvider();
-          firebase
-            .auth()
-            .signInWithPopup(provider)
-            .then(({ user }) => {
-              return user.getIdToken().then((idToken) => {
-                return fetch("/sessionLogin", {
-                  method: "POST",
-                  headers: {
-                    Accept: "application/json",
-                    "Content-Type": "application/json",
-                    "CSRF-Token": Cookies.get("XSRF-TOKEN"),
-                  },
-                  body: JSON.stringify({ idToken }),
-                });
+      document.getElementById("login_btn").addEventListener("click", () => {
+        let provider = new firebase.auth.GoogleAuthProvider();
+        firebase
+          .auth()
+          .signInWithPopup(provider)
+          .then(({ user }) => {
+            return user.getIdToken().then((idToken) => {
+              return fetch("/sessionLogin", {
+                method: "POST",
+                headers: {
+                  Accept: "application/json",
+                  "Content-Type": "application/json",
+                  "CSRF-Token": Cookies.get("XSRF-TOKEN"),
+                },
+                body: JSON.stringify({ idToken }),
               });
-            })
-            .then(() => {
-              return firebase.auth().signOut();
-            })
-            .then(() => {
-              window.location.assign("/profile");
             });
-        });
+          })
+          .then(() => {
+            return firebase.auth().signOut();
+          })
+          .then(() => {
+            window.location.assign("/profile");
+          });
       });
-    </script>
+    });
+  </script>
 
-    <hamburger-menu></hamburger-menu>
+  <hamburger-menu></hamburger-menu>
+  <div>
+
     <h1>Home page</h1>
     <p>This page is public</p>
     <a href="/profile">profile</a>
-  </main>
+  </div>
+
 </body>
 
 </html>

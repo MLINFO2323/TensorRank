@@ -6,27 +6,30 @@ class HamburgerMenu extends HTMLElement {
     connectedCallback() {
 
         this.innerHTML = `
-        <div class="hamburger-menu">
-        <input id="menu__toggle" type="checkbox" />
-        <label class="menu__btn" for="menu__toggle">
-        <span></span>
-        </label>
-        
-        <ul class="menu__box">
-            <li>
-                <button id="login_btn" class="login_btn">
-                    <h3 class="login_h3">
-                        Login
-                    </h3>
-                    <img width=30px src="./assets/google.svg"></img>
-                </button>
-            </li>
-            <li>
-            <h5 id="logged_as" style="margin-right:20px;margin-top:0px">
-            </h5>
-            </li>
-        </ul>
-        </div>
+        <nav role="navigation">
+            <div id="menuToggle">
+                <input type="checkbox" />
+                
+                <span></span>
+                <span></span>
+                <span></span>
+                <ul id="menu">
+                    <div style="width:100%;margin-top:-85px;margin-left:20px;display:flex;flex-direction:row;align-items:center;justify-content:flex-end">
+                        <h4 id="logged_as" style=";padding-top:5px;margin-right:20px">
+                        </h4>
+                        <button id="login_btn" class="login_btn"> 
+                            <h3 style="margin:0px;margin-right:15px;color:white">Log in </h3> 
+                            <img src="./assets/google.svg" style="width:30px;"/>
+                        </button>
+                    </div>
+                    <a href="#"><li>Home</li></a>
+                    <a href="#"><li>About</li></a>
+                    <a href="#"><li>Info</li></a>
+                    <a href="#"><li>Contact</li></a>
+                    <a href="https://erikterwan.com/" target="_blank"><li>Show me more</li></a>
+                </ul>
+            </div>
+        </nav>
         `
     }
 }

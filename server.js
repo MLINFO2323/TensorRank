@@ -80,6 +80,10 @@ app.get("/sessionLogout", (req, res) => {
   res.redirect("/");
 });
 
+app.get("/editor", (req, res) => {
+  res.render("editor.html")
+})
+
 app.listen(PORT, () => {
   console.log(`Listening on http://localhost:${PORT}`);
 });
