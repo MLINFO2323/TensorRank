@@ -3,21 +3,40 @@
 
 <head>
     <meta charset="utf-8" />
-    <title>Monaco editor</title>
+    <title id="windowTitle"></title>
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
     <link rel="stylesheet" data-name="vs/editor/editor.main"
         href="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.20.0/min/vs/editor/editor.main.min.css">
     <link />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.26.1/min/vs/loader.min.js"></script>
-    <link rel="stylesheet" href="./mvp.css" />
+    <link rel="stylesheet" href="/mvp.css" />
+    <script src="/components/hamburger.js"></script>
+    <script src="/components/navbar.js"></script>
+    <link rel="stylesheet" href="/components/hamburger.css" />
 </head>
 
 <body style="background-color: #202124;">
-    <div id="container" style="height:400px;"></div>
-    <button style="padding:4px 15px;background-color: greenyellow;border-color: black;border-radius: 4px;" id="runBtn">
-        Run
-    </button>
+
+    <nav-bar></nav-bar>
+    <main style="padding-left: 30px;padding-right: 30px;">
+
+        <h1 id="taskTitle"></h1>
+        <div id="container" style="height:80vh;"></div>
+        <button
+            style="padding:4px 15px;background-color: greenyellow;border-color: black;border-radius: 4px;margin-top: 20px;"
+            id="runBtn">
+            Run
+        </button>
+    </main>
     <script>
+        var taskId = parseInt('<%= taskId %>');
+        fetch("/tasks.json")
+            .then(response => response.json())
+            .then((tasks) => {
+                let task = tasks[taskId]
+                document.getElementById("taskTitle").innerHTML = task.title;
+                document.getElementById("windowTitle").innerHTML = task.title;
+            });
         const model = tf.sequential();
 
         fetch("/tfjs.d.ts")
@@ -68,7 +87,6 @@ model.predict(tf.tensor2d([5], [1, 1])).print();
                         language: "javascript",
                         theme: "vs-dark"
                     });
-
 
                     //setup run button
                     document.getElementById("runBtn").addEventListener("click", () => {

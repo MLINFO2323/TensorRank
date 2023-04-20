@@ -34,7 +34,6 @@ app.get("/profile", function (req, res) {
   admin.auth()
     .verifySessionCookie(sessionCookie, true /** checkRevoked */)
     .then((userData) => {
-      console.log("Logged in:", userData.email)
       res.render("profile.html");
     })
     .catch((error) => {
@@ -47,7 +46,6 @@ app.get("/", function (req, res) {
   admin.auth()
     .verifySessionCookie(sessionCookie, true /** checkRevoked */)
     .then((userData) => {
-      console.log("Logged in:", userData.email)
       res.render("index.html", { userEmail: userData.email, userPicture: userData.picture })
     })
     .catch((error) => {
@@ -80,8 +78,8 @@ app.get("/sessionLogout", (req, res) => {
   res.redirect("/");
 });
 
-app.get("/editor", (req, res) => {
-  res.render("editor.html")
+app.get("/task/:taskId", (req, res) => {
+  res.render("task.html",{taskId:req.params.taskId})
 })
 
 app.listen(PORT, () => {

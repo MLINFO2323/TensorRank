@@ -1,3 +1,10 @@
-{
-    
-}
+[
+    {
+        "pathToDataset": "/iris/iris.csv",
+        "title": "Iris classification",
+        "description": "Predict the class of iris plant.",
+        "tags": [
+            "classification","svm"
+        ]
+    }
+]
