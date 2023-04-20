@@ -1,4 +1,7 @@
 class Navbar extends HTMLElement {
+    static get observedAttributes() {
+        return ["hide-login"]
+    }
     constructor() {
         super()
     }
@@ -10,11 +13,17 @@ class Navbar extends HTMLElement {
             style="background: #2b2b2b;display: flex;flex-direction: row;padding:0px;height: 120px;justify-content: space-between;">
             <hamburger-menu></hamburger-menu>
             <div style="display: flex;flex-direction: row;align-items: center;">
-                <h1>TensorRank</h1>
+                <a href="/"><h1>TensorRank</h1></a>
                 <img src="/tf.svg" height="70px" style="margin:0px 20px" alt="" />
             </div>
         </div>
         `
+    }
+
+    attributeChangedCallback(attrName, oldVal, newVal) {
+        if (attrName == "hide-login") {
+            this.querySelector("hamburger-menu").setAttribute("hide-login", newVal)
+        }
     }
 }
 

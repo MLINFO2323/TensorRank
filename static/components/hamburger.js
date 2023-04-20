@@ -1,4 +1,8 @@
 class HamburgerMenu extends HTMLElement {
+    static get observedAttributes() {
+        return ["hide-login"]
+    }
+
     constructor() {
         super()
     }
@@ -14,7 +18,7 @@ class HamburgerMenu extends HTMLElement {
                 <span></span>
                 <span></span>
                 <ul id="menu">
-                    <div style="width:100%;margin-top:-85px;margin-left:20px;display:flex;flex-direction:row;align-items:center;justify-content:flex-end">
+                    <div id="login_container" style="width:100%;margin-top:-85px;margin-left:20px;display:flex;flex-direction:row;align-items:center;justify-content:flex-end">
                         <a href="/profile">
                             <h4 id="logged_as" style=";padding-top:5px;margin-right:20px"></h4>
                         </a>
@@ -32,6 +36,12 @@ class HamburgerMenu extends HTMLElement {
             </div>
         </nav>
         `
+    }
+
+    attributeChangedCallback(attrName, oldVal, newVal) {
+        if (attrName == "hide-login") {
+            this.querySelector("#login_container").style.display = newVal ? "none" : "flex";
+        }
     }
 }
 

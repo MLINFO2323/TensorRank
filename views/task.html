@@ -18,7 +18,7 @@
 <body style="background-color: #202124;">
 
     <nav-bar></nav-bar>
-    <main style="padding-left: 30px;padding-right: 30px;">
+    <main style="padding: 0px 30px;">
 
         <h1 id="taskTitle"></h1>
         <div id="container" style="height:80vh;"></div>
@@ -29,6 +29,7 @@
         </button>
     </main>
     <script>
+        document.querySelector("nav-bar").setAttribute("hide-login", "true")
         var taskId = parseInt('<%= taskId %>');
         fetch("/tasks.json")
             .then(response => response.json())
