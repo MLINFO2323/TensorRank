@@ -1,0 +1,15 @@
+.loader {
+  border-top: 10px solid yellowgreen;
+  border-right: 10px solid greenyellow;
+  border-bottom: 10px solid rgb(115, 155, 36);
+  border-left: 10px solid greenyellow;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
