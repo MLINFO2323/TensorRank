@@ -11,7 +11,7 @@ class Navbar extends HTMLElement {
             <hamburger-menu></hamburger-menu>
             <div style="display: flex;flex-direction: row;align-items: center;">
                 <h1>TensorRank</h1>
-                <img src="/tf.svg" height="70px" style="margin:0px 20px" alt="" />
+                <img src="/assets/tf.svg" height="70px" style="margin:0px 20px" alt="" />
             </div>
         </div>
         `
