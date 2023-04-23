@@ -24,14 +24,38 @@
 
         <h1 id="taskTitle"></h1>
         <div id="container" style="height:80vh;"></div>
-        <button
-            style="padding:4px 15px;background-color: greenyellow;border-color: black;border-radius: 4px;margin-top: 20px;"
-            id="runBtn">
-            Run
-        </button>
-        
+        <div style="display: flex;flex-direction: row;align-items: center;padding: 10px 0px;">
+            <button
+                style="padding:4px 15px;background-color: greenyellow;border-color: black;border-radius: 4px;margin-right: 10px;"
+                id="runBtn">
+                Run
+            </button>
+            <loading-icon hidden></loading-icon>
+        </div>
     </main>
     <script>
+
+        function splitArray(arr, percent) {
+            const n = arr.length;
+            const splitIndex = Math.floor(percent * n);
+            const firstChunk = arr.slice(0, splitIndex);
+            const secondChunk = arr.slice(splitIndex);
+            return [firstChunk, secondChunk];
+        }
+
+        function splitDataset(dataset, labelColumn) {
+            const X = [];
+            const Y = [];
+            for (let i = 0; i < dataset.length; i++) {
+                const row = dataset[i];
+                const x = row.filter((element, index) => index !== labelColumn);
+                const y = row[labelColumn];
+                X.push(x);
+                Y.push([y]);
+            }
+            return [X, Y];
+        }
+
         document.querySelector("nav-bar").setAttribute("hide-login", "true")
         var taskId = parseInt('<%= taskId %>');
         var task;
@@ -50,7 +74,7 @@
 
                 // require is provided by loader.min.js.
                 require.config({ paths: { 'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.26.1/min/vs' } });
-                require(["vs/editor/editor.main"],async () => {
+                require(["vs/editor/editor.main"], async () => {
                     monaco.languages.typescript.javascriptDefaults.setDiagnosticsOptions({
                         noSemanticValidation: true,
                         noSyntaxValidation: false,
@@ -68,22 +92,36 @@
                     monaco.languages.typescript.javascriptDefaults.addExtraLib(tfjsSource, libUri);
                     monaco.editor.createModel(tfjsSource, "typescript", monaco.Uri.parse(libUri));
 
-                    let defaultCode = await(await fetch("/defaultCode.txt")).text()
+                    let defaultCode = await (await fetch("/defaultCode.txt")).text()
                     window.editor = monaco.editor.create(document.getElementById("container"), {
                         value: defaultCode,
                         language: "javascript",
                         theme: "vs-dark"
                     });
 
-                    
-                    fetch(task.pathToDataset).then(rdata=>rdata.text()).then((trainDataCsv)=>{
-                        let trainData = $.csv.toArrays(trainDataCsv)
-                        const trainX = trainData.map((row)=>row.filter((element,index)=>index!=task.label_column))
-                        const trainY = trainData.map((row)=>row.filter((element,index)=>index==task.label_column))
+                    fetch(task.pathToDataset).then(rdata => rdata.text()).then((trainDataCsv) => {
+                        let allData = $.csv.toArrays(trainDataCsv)
+                        for (let i = 0; i < allData.length; i++)
+                            for (let j = 0; j < allData[i].length; j++)
+                                allData[i][j] = parseFloat(allData[i][j]);
+                        allData.sort(() => Math.random() - 0.5);
+                        const [dataXArr, dataYArr] = splitDataset(allData, task.labelColumn);
+
+                        const dataX = tf.tensor(dataXArr)
+                        const dataY = tf.tensor(dataYArr)
+                        console.log(dataXArr)
                         //setup run button
                         document.getElementById("runBtn").addEventListener("click", () => {
-                            console.log(eval(window.editor.getValue()))
-                        })
+                            let loadingIcon = document.querySelector("loading-icon")
+                            loadingIcon.removeAttribute("hidden");
+                            var ret = eval(window.editor.getValue());
+
+                            if (ret instanceof Promise) {
+                                ret.then(() => {
+                                    loadingIcon.setAttribute("hidden", "hidden")
+                                });
+                            }
+                        });
                     });
                 });
             });
