@@ -6,8 +6,7 @@ model.compile({
     optimizer: 'sgd',
     metrics: ['categoricalAccuracy'] // Use categoricalAccuracy as the evaluation metric
 });
-const dataYHot = tf.oneHot(tf.cast(dataY,'int32').squeeze(),3)
-model.fit(dataX, dataYHot, { epochs: 100 }).then(info => {
+model.fit(dataX, dataY, { epochs: 100 }).then(info => {
     let acc = info.history.categoricalAccuracy;
     console.log('Final accuracy', acc[acc.length - 1]);
 });

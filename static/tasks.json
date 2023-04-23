@@ -1,12 +1,14 @@
 [
     {
         "pathToDataset": "/datasets/iris/iris.csv",
+        "pathToDatasetInfo": "/datasets/iris/iris.info",
         "title": "Iris classification",
-        "description": "Predict the class of iris plant. Label values 0=Iris-setosa, 1=Iris-versicolor, 2=Iris-virginica",
+        "description": "Predict the class of iris plant. <br> Label values are Iris-setosa(0), Iris-versicolor(1), Iris-virginica(2).",
         "labelColumn": 4,
+        "classes": 3,
         "tags": [
             "classification",
-            "knn"
+            "easy"
         ]
     }
 ]

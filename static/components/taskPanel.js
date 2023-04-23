@@ -11,7 +11,7 @@ class TaskPanel extends HTMLElement {
             <link rel="stylesheet" href="/components/taskPanel.css" />
             <div class="panel">
                 <a href="" id="taskLink"><h1 id="title"></h1></a>
-                <h3 id="desc"></h3>
+                <h3 id="desc" style="margin"></h3>
                 <div id="tagHolder" class="tagHolder">
                     <h3>Tags: </h3>
                 </div>

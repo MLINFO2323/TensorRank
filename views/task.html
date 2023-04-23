@@ -15,15 +15,19 @@
     <script src="/components/loadingIcon.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-csv/1.0.11/jquery.csv.min.js"></script>
+    <script src="/components/collapsableDiv.js"></script>
 </head>
 
 <body style="background-color: #202124;">
 
     <nav-bar></nav-bar>
     <main style="padding: 0px 30px;">
-
         <h1 id="taskTitle"></h1>
-        <div id="container" style="height:80vh;"></div>
+        <p id="taskDesc"></p>
+        <collapsable-div title="Dataset details">
+            <p id="datasetDetails" style="padding: 10px 0px;"></p>
+        </collapsable-div>
+        <div id="container" style="margin-top: 30px;height:80vh;"></div>
         <div style="display: flex;flex-direction: row;align-items: center;padding: 10px 0px;">
             <button
                 style="padding:4px 15px;background-color: greenyellow;border-color: black;border-radius: 4px;margin-right: 10px;"
@@ -33,29 +37,8 @@
             <loading-icon hidden></loading-icon>
         </div>
     </main>
-    <script>
-
-        function splitArray(arr, percent) {
-            const n = arr.length;
-            const splitIndex = Math.floor(percent * n);
-            const firstChunk = arr.slice(0, splitIndex);
-            const secondChunk = arr.slice(splitIndex);
-            return [firstChunk, secondChunk];
-        }
-
-        function splitDataset(dataset, labelColumn) {
-            const X = [];
-            const Y = [];
-            for (let i = 0; i < dataset.length; i++) {
-                const row = dataset[i];
-                const x = row.filter((element, index) => index !== labelColumn);
-                const y = row[labelColumn];
-                X.push(x);
-                Y.push([y]);
-            }
-            return [X, Y];
-        }
-
+    <script type="module">
+        import { readClassificationDataset } from "/scripts/evaluator.js"
         document.querySelector("nav-bar").setAttribute("hide-login", "true")
         var taskId = parseInt('<%= taskId %>');
         var task;
@@ -65,6 +48,10 @@
                 task = tasks[taskId]
                 document.getElementById("taskTitle").innerHTML = task.title;
                 document.getElementById("windowTitle").innerHTML = task.title;
+                document.getElementById("taskDesc").innerHTML = task.description;
+                fetch(task.pathToDatasetInfo).then(resp => resp.text()).then((desc) => {
+                    document.getElementById("datasetDetails").innerText = desc
+                });
             });
         const model = tf.sequential();
 
@@ -100,15 +87,8 @@
                     });
 
                     fetch(task.pathToDataset).then(rdata => rdata.text()).then((trainDataCsv) => {
-                        let allData = $.csv.toArrays(trainDataCsv)
-                        for (let i = 0; i < allData.length; i++)
-                            for (let j = 0; j < allData[i].length; j++)
-                                allData[i][j] = parseFloat(allData[i][j]);
-                        allData.sort(() => Math.random() - 0.5);
-                        const [dataXArr, dataYArr] = splitDataset(allData, task.labelColumn);
+                        const [dataX, dataY] = readClassificationDataset(trainDataCsv, task)
 
-                        const dataX = tf.tensor(dataXArr)
-                        const dataY = tf.tensor(dataYArr)
                         //setup run button
                         document.getElementById("runBtn").addEventListener("click", () => {
                             let loadingIcon = document.querySelector("loading-icon")
