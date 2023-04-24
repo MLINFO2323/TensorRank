@@ -1,6 +1,6 @@
 /* Style the button that is used to open and close the collapsible content */
 .collapsable {
-    background-color: #2C363F;
+    background-color: #3b3b3b;
     color: white;
     cursor: pointer;
     padding: 18px;
@@ -16,13 +16,13 @@
 .active,
 .collapsable:hover {
     background-color: #ccc;
-    color: #3C454F;
+    color: #3b3b3b;
     transition: background-color .3s;
 }
 
 .content {
     padding: 0px 18px;
-    background-color: #3C454F;
+    background-color: #3b3b3b;
     max-height: 0;
     overflow: hidden;
     transition: max-height 0.2s ease-out;

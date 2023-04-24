@@ -34,7 +34,9 @@
                 id="runBtn">
                 Run
             </button>
-            <loading-icon hidden></loading-icon>
+        </div>
+        <div id="testRuns" style="display:flex;flex-direction: column;">
+
         </div>
     </main>
     <script type="module">
@@ -91,14 +93,46 @@
 
                         //setup run button
                         document.getElementById("runBtn").addEventListener("click", () => {
-                            let loadingIcon = document.querySelector("loading-icon")
-                            loadingIcon.removeAttribute("hidden");
-                            var ret = eval(window.editor.getValue());
+                            var model = eval(window.editor.getValue());
+                            if (model.fit) {
+                                let testRuns = document.getElementById("testRuns")
+                                function displayAttempt(idx) {
+                                    let attContainer = document.createElement("div")
+                                    attContainer.style.display = "flex"
+                                    attContainer.style.flexDirection = "row"
+                                    attContainer.style.justifyContent = "space-between"
+                                    attContainer.style.alignItems = "center"
+                                    attContainer.style.padding = "0px 10px"
+                                    attContainer.style.borderRadius = "5px"
+                                    attContainer.style.marginTop = "4px"
+                                    attContainer.style.border = "solid yellowgreen 2px"
+                                    testRuns.appendChild(attContainer)
+                                    let loadingIcon = document.createElement("loading-icon")
+                                    let testText = document.createElement("h3")
+                                    testText.innerHTML = "Attempt: " + idx;
+                                    attContainer.appendChild(testText);
+                                    attContainer.appendChild(loadingIcon);
+                                    return attContainer;
+                                }
+                                function startAttempt(idx, attContainer) {
 
-                            if (ret instanceof Promise) {
-                                ret.then(() => {
-                                    loadingIcon.setAttribute("hidden", "hidden")
-                                });
+                                    return model.fit(dataX, dataY, { epochs: 100 }).then(info => {
+                                        let acc = info.history.categoricalAccuracy;
+                                        attContainer.querySelector("loading-icon").remove()
+                                        let accText = document.createElement("h3")
+                                        accText.innerHTML = " Accuracy: " + Math.floor(acc[acc.length - 1] * 100) + "%";
+                                        attContainer.appendChild(accText)
+                                    });
+                                }
+                                testRuns.innerHTML = ""
+                                let currentPromise = startAttempt(1, displayAttempt(1))
+                                for (let i = 2; i <= 10; i++) {
+                                    let container = displayAttempt(i);
+                                    currentPromise = currentPromise.then(() => startAttempt(i, container))
+                                }
+                            }
+                            else {
+                                alert("You did not return a model!")
                             }
                         });
                     });

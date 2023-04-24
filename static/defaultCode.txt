@@ -6,7 +6,5 @@ model.compile({
     optimizer: 'sgd',
     metrics: ['categoricalAccuracy'] // Use categoricalAccuracy as the evaluation metric
 });
-model.fit(dataX, dataY, { epochs: 100 }).then(info => {
-    let acc = info.history.categoricalAccuracy;
-    console.log('Final accuracy', acc[acc.length - 1]);
-});
+
+model; // return model  
